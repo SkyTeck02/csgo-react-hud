@@ -182,7 +182,8 @@
                 flex: 1;
                 min-width: 0;
                 .hp_bar {
-                    height: 2px;
+                    height: 100%;
+                    position: absolute;
                     &.low {
                         background-color: red;
                     }
