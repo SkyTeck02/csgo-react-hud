@@ -1,6 +1,6 @@
 import React from 'react';
-import { actions } from '../../App';
 import CameraContainer from '../Camera/Container';
+import PlayerCamera from "./../Camera/Camera";
 
 import { avatars } from './../../api/avatars';
 
@@ -12,26 +12,28 @@ interface IProps {
   height?: number,
   width?: number,
   showSkull?: boolean,
-  showCam?: boolean
+  showCam?: boolean,
+  sidePlayer?: boolean
 }
 export default class Avatar extends React.Component<IProps> {
-  render(){
-    const { showCam, steamid, width, height, showSkull } = this.props;
+
+  render() {
+    const { showCam, steamid, width, height, showSkull, sidePlayer } = this.props;
     //const url = avatars.filter(avatar => avatar.steamid === this.props.steamid)[0];
     const avatarData = avatars[this.props.steamid];
-    if(!avatarData || !avatarData.url){
-        return null;
+    if (!avatarData || !avatarData.url) {
+      return null;
     }
 
     return (
       <div className={`avatar`}>
-          {
-            showCam ? <CameraContainer observedSteamid={steamid} /> : null
-          }
-          {
-            showSkull ? <Skull height={height} width={width} /> : <img src={avatarData.url} height={height} width={width} alt={'Avatar'} />
-          }
-          
+        {
+          showCam ? ( sidePlayer ? <div className="videofeed"><PlayerCamera steamid={steamid} visible={true} /></div> : <CameraContainer observedSteamid={steamid} />) : null
+        }
+        {
+          showSkull ? <Skull height={height} width={width} /> : <img src={avatarData.url} height={height} width={width} alt={'Avatar'} />
+        }
+
       </div>
     );
   }

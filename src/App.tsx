@@ -6,8 +6,22 @@ import ActionManager, { ConfigManager } from './api/actionManager';
 
 import { CSGO, PlayerExtension, GSISocket } from "csgogsi-socket";
 import { Match } from './api/interfaces';
+import { initiateConnection } from './HUD/Camera/mediaStream';
 
 export const { GSI, socket } = GSISocket(isDev ? `localhost:${port}` : '/', "update");
+
+type RoundPlayerDamage = {
+	steamid: string;
+	damage: number;
+};
+type RoundDamage = {
+	round: number;
+	players: RoundPlayerDamage[];
+};
+
+socket.on('update', (_csgo: any, damage?: RoundDamage[]) => {
+	if(damage) GSI.damage = damage;
+});
 
 export const actions = new ActionManager();
 export const configs = new ConfigManager();
@@ -95,6 +109,7 @@ class App extends React.Component<any, { match: Match | null, game: CSGO | null,
 
 		socket.on("readyToRegister", () => {
 			socket.emit("register", name, isDev);
+			initiateConnection();
 		});
 		socket.on(`hud_config`, (data: any) => {
 			configs.save(data);
